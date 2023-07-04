@@ -1,4 +1,4 @@
-[ORG 0x7c00]
+[ORG 0x500]
 
 [SECTION .text]
 [BITS 16]
@@ -7,8 +7,8 @@ global _start
 _start:
     ; These two lines of code would change the video mode
     ; of the computer to 80x25 text mode(80 columns by 25 rows)
-    mov ax, 3
-    int 0x10
+;    mov ax, 3
+;    int 0x10
 
     mov ax, 0
     mov ss, ax
@@ -18,16 +18,10 @@ _start:
     mov gs, ax
     mov si, ax
 
-    mov si, msg
+    mov si, message
     call print
 
-    ; $ This symbol refers to the current address being executed
     jmp $
-
-msg:
-    ; In ASCII, the value 10 represents a newline (\n)
-    ; In ASCII, the value 13 represents a carriage return (\r)
-    db "Hello FunSizeOS ...", 10, 13, 0
 
 print:
     ; ah = 0x0E corresponds to the "Teletype output" service,
@@ -52,7 +46,7 @@ print:
 .done:
     ret
 
-times 510 - ($ - $$) db 0
-; These specific values (0x55 and 0xaa) are known as the boot signature,
-; which is a marker used by the BIOS to identify the MBR as a valid bootable device.
-db 0x55, 0xaa
+message:
+    ; In ASCII, the value 10 represents a newline (\n)
+    ; In ASCII, the value 13 represents a carriage return (\r)
+    db "Hello, second sector ...", 10, 13, 0

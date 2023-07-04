@@ -2,3 +2,5 @@
 build
 hello.img
 bx_enh_dbg.ini
+hd.img
+hd.img.lock
