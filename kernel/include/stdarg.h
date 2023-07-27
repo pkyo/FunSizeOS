@@ -20,8 +20,8 @@ typedef char *va_list;
 // This is because in a 32-bit system, the size of a pointer is typically matched to the size of registers,
 // which is 4 bytes in a 32-bit system
 
-// p is the pointer to the current argument,
-// and t is the type of the argument to be retrieved
+// `p` is the pointer to the current argument,
+// and `t` is the type of the argument to be retrieved
 // `(p += sizeof(char*))` moving it to the next argument position
 // `*(t*)` casts the resulting pointer back to the desired type `t*`
 // The final `*` dereferences the pointer, obtaining the value of type t from the current argument position
