@@ -3,14 +3,16 @@
 //
 #include "../include/stdarg.h"
 #include "../include/string.h"
-
-/* we use this so that we can do without the ctype library */
-#define is_digit(c)    ((c) >= '0' && (c) <= '9')
+#include "../include/linux/kernel.h"
 
 // This is not necessary. ⚠️
 // A compiler directive used in many IDEs (Integrated Development Environments)
 // to suppress specific warnings or errors.
+#pragma clang diagnostic push
 #pragma ide diagnostic ignored "OCDFAInspection"
+
+/* we use this so that we can do without the ctype library */
+#define is_digit(c)    ((c) >= '0' && (c) <= '9')
 
 // The `skip_atoi` function is a kind of string to integer function which ignores non-numeric characters
 static int skip_atoi(const char **s) {
@@ -38,8 +40,7 @@ static int skip_atoi(const char **s) {
  *      🌟The `#` flag modifies the output of o, x, X, e, E, f, F, g, G format specifiers.
  *          For o, x, X it prefixes the output with 0, 0x, 0X respectively.
  *      🌟The `0` flag pads the output of numeric types with leading zeros.
- *          It is ignored if the - flag is also specified,
- *          or if a precision is given for floating-point format specifiers.
+ *          It is ignored if the - flag is also specified.
  *
  * 🌞width: Specifies the minimum number of characters to output
  *      🌟The width can be either a number or an asterisk (*).
@@ -172,7 +173,7 @@ static char *number(char *str, int num, int base, int size, int precision, int t
             *str++ = '0';
         else if (base == 16) {
             *str++ = '0';
-            *str++ = digits[33]; // X x
+            *str++ = digits[33]; // X or x
         }
     }
 
@@ -190,10 +191,8 @@ static char *number(char *str, int num, int base, int size, int precision, int t
     while (size-- > 0)
         *str++ = ' ';
 
-    return 0;
+    return str;
 }
-
-#pragma clang diagnostic ignored "-Wincompatible-library-redeclaration"
 
 int vsprintf(char *buf, const char *fmt, va_list args) {
     // These are various variables that will be used in the function.
@@ -206,7 +205,7 @@ int vsprintf(char *buf, const char *fmt, va_list args) {
     //  These variables are used to interpret the format string.
     int flags;          /* flags to number() */
     int field_width;    /* width of output field */
-    int precision;      /* min. # of digits for integers; max number of chars for from string */
+    int precision;      /* min number of digits for integers; max number of chars for from string */
     int qualifier;      /* 'h', 'l', or 'L' for integer fields */
 
     // `str` is set to the start of the buffer,
@@ -380,3 +379,5 @@ int vsprintf(char *buf, const char *fmt, va_list args) {
 
     return str - buf;
 }
+
+#pragma clang diagnostic pop

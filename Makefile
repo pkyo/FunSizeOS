@@ -3,6 +3,7 @@ BUILDDIR:=./build
 BOOT:=kernel/boot
 INIT:=kernel/init
 KERNEL:=kernel/kernel
+KERNEL_LIB:=kernel/lib
 # -m32: This option tells the compiler to generate code that will run on a 32-bit machine or in a 32-bit environment.
 # -masm=intel: This option tells the GCC compiler to output assembly code in Intel syntax, instead of the default AT&T syntax.
 # -fno-builtin: This option tells the compiler not to recognize built-in functions which do not begin with an underscore in the source code.
@@ -54,11 +55,32 @@ ${BUILDDIR}/system.bin: ${BUILDDIR}/kernel.bin
 	# In this case, it is used to list the symbols from the input file ($<, which is ${BUILDDIR}/kernel.bin)
 	@nm $< | sort > ${BUILDDIR}/system.map
 
-${BUILDDIR}/kernel.bin: ${BUILDDIR}/boot/head.o ${BUILDDIR}/init/main.o
+${BUILDDIR}/kernel.bin: ${BUILDDIR}/boot/head.o ${BUILDDIR}/init/main.o \
+		${BUILDDIR}/kernel/asm/io.o \
+		${BUILDDIR}/kernel/chr_drv/console.o \
+		${BUILDDIR}/lib/string.o \
+		${BUILDDIR}/kernel/vsprintf.o \
+		${BUILDDIR}/kernel/printk.o
 	# ld: It is the GNU linker, used to link object files and libraries into an executable or a final binary.
 	# -m elf_i386: This flag specifies the target format as ELF (Executable and Linkable Format) for the 32-bit x86 architecture.
 	# -Ttext 0x1200: This flag sets the starting address of the text (code) section to 0x1200 in the output file.
 	@ld -m elf_i386 $^ -o $@ -Ttext 0x1200
+
+${BUILDDIR}/kernel/%.o: ${KERNEL}/%.c
+	$(shell mkdir -p ${BUILDDIR}/kernel)
+	@gcc ${CFLAGS} ${DEBUG} -c $< -o $@
+
+${BUILDDIR}/lib/%.o: ${KERNEL_LIB}/%.c
+	$(shell mkdir -p ${BUILDDIR}/lib)
+	@gcc ${CFLAGS} ${DEBUG} -c $< -o $@
+
+${BUILDDIR}/kernel/chr_drv/%.o: ${KERNEL}/chr_drv/%.c
+	$(shell mkdir -p ${BUILDDIR}/kernel/chr_drv)
+	@gcc ${CFLAGS} ${DEBUG} -c $< -o $@
+
+${BUILDDIR}/kernel/asm/%.o: ${KERNEL}/asm/%.asm
+	$(shell mkdir -p ${BUILDDIR}/kernel/asm)
+	@nasm -f elf32 -g $< -o $@
 
 ${BUILDDIR}/init/main.o: ${INIT}/main.c
 	@mkdir -p $(dir $@)

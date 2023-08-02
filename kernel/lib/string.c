@@ -14,3 +14,15 @@ size_t strlen(const char *str) {
 
     return ptr - str;
 }
+
+
+void *memcpy(void *dest, const void *src, size_t count) {
+    char *ptr = dest;
+
+    while (count--) {
+        *ptr++ = *((char *) (src++));
+    }
+
+    return dest;
+}
+

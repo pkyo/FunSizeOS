@@ -7,8 +7,8 @@
 
 #include "asm/system.h"
 
-#pragma clang diagnostic ignored "-Wincompatible-library-redeclaration"
-
 size_t strlen(const char *str);
+
+void *memcpy(void *dest, const void *src, size_t count);
 
 #endif //FUNSIZEOS_STRING_H
