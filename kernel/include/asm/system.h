@@ -7,4 +7,6 @@
 
 #include "../linux/types.h"
 
+#define BOCHS_DEBUG_MAGIC   __asm__("xchg bx, bx");
+
 #endif //FUNSIZEOS_SYSTEM_H

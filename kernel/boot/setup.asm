@@ -11,6 +11,9 @@ KERNEL_ADDR equ 0x1200
 SEG_BASE equ 0
 SEG_LIMIT equ 0xfffff
 
+B8000_SEG_BASE equ 0xb8000
+B8000_SEG_LIMIT equ 0x7fff
+
 ; CODE_SELECTOR and DATA_SELECTOR are effectively set to 8 and 16 respectively
 ; When CODE_SELECTOR is broken down, it can be seen to contain the following parts:
 ;   1. Requested Privilege Level (RPL): The lowest two bits (bit 0 and bit 1) define the Requested Privilege Level
@@ -21,6 +24,7 @@ SEG_LIMIT equ 0xfffff
 ;       which defines the position of the segment in the descriptor table
 CODE_SELECTOR equ (1 << 3)
 DATA_SELECTOR equ (2 << 3)
+B8000_SELECTOR equ (3 << 3)
 
 ; This line initializes the base of the GDT with a zero address and limit
 gdt_base:
@@ -59,7 +63,7 @@ gdt_code:
     ; DB is the default operation size (1 for 32-bit segment, 0 for 16-bit segment)
     ; AVL is available for use by system software
     ; LIMIT defines the high nibble of the segment limit.
-    COMPUTE_G_DB_AVL_LIMIT 0b01000000, SEG_LIMIT ; 0b0_1_00_0000
+    COMPUTE_G_DB_AVL_LIMIT 0b11000000, SEG_LIMIT ; 0b1_1_00_0000
     db SEG_BASE >> 24 & 0xf
 
 gdt_data:
@@ -79,6 +83,16 @@ gdt_data:
     ; LIMIT defines the high nibble of the segment limit.
     COMPUTE_G_DB_AVL_LIMIT 0b11000000, SEG_LIMIT ; 0b1_1_00_0000
     db SEG_BASE >> 24 & 0xf
+
+gdt_b8000:
+    dw B8000_SEG_LIMIT & 0xffff
+    dw B8000_SEG_BASE & 0xffff
+    db B8000_SEG_BASE >> 16 & 0xff
+    ; P_DPL_S_TYPE
+    db 0b1_00_1_0010
+    ; G_DB_AVL_LIMIT
+    COMPUTE_G_DB_AVL_LIMIT 0b01000000, SEG_LIMIT ; 0b0_1_00_0000
+    db B8000_SEG_BASE >> 24 & 0xf
 
 gdt_ptr:
     ; $ - gdt_base computes the size of the GDT by subtracting
