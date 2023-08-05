@@ -10,11 +10,19 @@ void kernel_main(void) {
 
     gdt_init();
 
+    idt_init();
+
     char *s = "Peter.Pei";
 
     for (int i = 0; i < 30; ++i) {
         printk("My name is %s, and my age is %d\n", s, i);
     }
+
+    // The "sti;" instruction stands for "Set Interrupt Flag".
+    // It is an assembly instruction for x86 processors that
+    // enables hardware interrupts by setting the interrupt flag in the EFLAGS register.
+    // Once this flag is set, the CPU is allowed to process hardware interrupts.
+    __asm__("sti;");
 
     while (true);
 }

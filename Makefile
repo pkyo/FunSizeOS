@@ -61,7 +61,10 @@ ${BUILDDIR}/kernel.bin: ${BUILDDIR}/boot/head.o ${BUILDDIR}/init/main.o \
 		${BUILDDIR}/lib/string.o \
 		${BUILDDIR}/kernel/vsprintf.o \
 		${BUILDDIR}/kernel/printk.o \
-		${BUILDDIR}/kernel/gdt.o
+		${BUILDDIR}/kernel/gdt.o \
+		${BUILDDIR}/kernel/idt.o \
+		${BUILDDIR}/kernel/asm/interrupt_handler.o \
+		${BUILDDIR}/kernel/traps.o
 	# ld: It is the GNU linker, used to link object files and libraries into an executable or a final binary.
 	# -m elf_i386: This flag specifies the target format as ELF (Executable and Linkable Format) for the 32-bit x86 architecture.
 	# -Ttext 0x1200: This flag sets the starting address of the text (code) section to 0x1200 in the output file.

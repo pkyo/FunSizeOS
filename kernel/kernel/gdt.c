@@ -76,7 +76,7 @@ static void r3_gdt_data_item(int gdt_index, int base, int limit) {
 }
 
 void gdt_init() {
-    printk("start init dgt ...\n");
+    printk("start init gdt ...\n");
 
     // The `volatile` keyword tells the compiler not to optimize this block of code,
     // ensuring that it is executed exactly as written.
