@@ -19,9 +19,12 @@
 
 interrupt_gate_t interrupt_table[INTERRUPT_TABLE_SIZE] = {0};
 
-char idt_ptr[6] = {0};
+//char idt_ptr[6] = {0};
+xdt_ptr_t idt_ptr;
 
 extern void interrupt_handler();
+
+extern void keymap_handler_entry();
 
 void idt_init() {
     printk("start init idt ...\n");
@@ -38,6 +41,10 @@ void idt_init() {
         // Gets the address of the interrupt handler function.
         int handler = (int) interrupt_handler;
 
+        if (0x21 == i) {
+            handler = (int) keymap_handler_entry;
+        }
+
         p->offset0 = handler & 0xffff;
         p->offset1 = (handler >> 16) & 0xffff;
 
@@ -51,13 +58,16 @@ void idt_init() {
 
     // This line is setting the first 2 bytes (short) of idt_ptr to the size of the IDT.
     // The IDT size is calculated as `INTERRUPT_TABLE_SIZE * 8` because each entry in the IDT is 8 bytes long.
-    *(short *) idt_ptr = INTERRUPT_TABLE_SIZE * 8;
+    // *(short *) idt_ptr = INTERRUPT_TABLE_SIZE * 8;
 
     // This line is setting the next 4 bytes (int) of `idt_ptr` (starting from byte 2) to
     // the base address of `interrupt_table`.
     // This makes `idt_ptr` effectively a structure of two fields:
     // a 16-bit limit (size of IDT) and a 32-bit base address (location of IDT).
-    *(int *) (idt_ptr + 2) = (int) interrupt_table;
+    // *(int *) (idt_ptr + 2) = (int) interrupt_table;
+
+    write_xdt_ptr(&idt_ptr, INTERRUPT_TABLE_SIZE * 8, (int) interrupt_table);
+
 
     BOCHS_DEBUG_MAGIC
 

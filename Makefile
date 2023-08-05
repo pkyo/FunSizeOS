@@ -58,6 +58,7 @@ ${BUILDDIR}/system.bin: ${BUILDDIR}/kernel.bin
 ${BUILDDIR}/kernel.bin: ${BUILDDIR}/boot/head.o ${BUILDDIR}/init/main.o \
 		${BUILDDIR}/kernel/asm/io.o \
 		${BUILDDIR}/kernel/chr_drv/console.o \
+		${BUILDDIR}/kernel/chr_drv/keyboard.o \
 		${BUILDDIR}/lib/string.o \
 		${BUILDDIR}/kernel/vsprintf.o \
 		${BUILDDIR}/kernel/printk.o \
