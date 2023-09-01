@@ -59,12 +59,14 @@ ${BUILDDIR}/kernel.bin: ${BUILDDIR}/boot/head.o ${BUILDDIR}/init/main.o \
 		${BUILDDIR}/kernel/asm/io.o \
 		${BUILDDIR}/kernel/chr_drv/console.o \
 		${BUILDDIR}/kernel/chr_drv/keyboard.o \
+		${BUILDDIR}/kernel/chr_drv/clock.o \
 		${BUILDDIR}/lib/string.o \
 		${BUILDDIR}/kernel/vsprintf.o \
 		${BUILDDIR}/kernel/printk.o \
 		${BUILDDIR}/kernel/gdt.o \
 		${BUILDDIR}/kernel/idt.o \
 		${BUILDDIR}/kernel/asm/interrupt_handler.o \
+		${BUILDDIR}/kernel/asm/clock_handler.o \
 		${BUILDDIR}/kernel/traps.o \
 		${BUILDDIR}/kernel/exception.o
 	# ld: It is the GNU linker, used to link object files and libraries into an executable or a final binary.

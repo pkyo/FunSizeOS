@@ -56,9 +56,9 @@ _start:
     ; Sends ICW4 to the slave PIC.
     out 0a1h, al
 
-; Disable all interrupts handled by the 8259A PIC except for the keyboard interrupt.
+; Disable all interrupts handled by the 8259A PIC except for the keyboard interrupt and clock interrupt.
 .enable_8259a_main:
-    mov al, 11111101b
+    mov al, 11111100b
     out 21h, al
 
 ; Mask or disable all interrupts from a slave PIC.
