@@ -5,10 +5,8 @@
 //
 
 
-#include "../include/asm/system.h"
 #include "../include/linux/head.h"
 #include "../include/linux/traps.h"
-#include "../include/linux/kernel.h"
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wbitfield-constant-conversion"
@@ -31,8 +29,6 @@ extern void clock_handler_entry();
 extern int interrupt_handler_table[0x2f];
 
 void idt_init() {
-    printk("start init idt ...\n");
-
     for (int i = 0; i < INTERRUPT_TABLE_SIZE; ++i) {
         interrupt_gate_t *p = &interrupt_table[i];
 
@@ -81,7 +77,7 @@ void idt_init() {
     write_xdt_ptr(&idt_ptr, INTERRUPT_TABLE_SIZE * 8, (int) interrupt_table);
 
 
-    BOCHS_DEBUG_MAGIC
+    // BOCHS_DEBUG_MAGIC
 
     // Loads the IDT pointer into the CPU.
     asm volatile("lidt idt_ptr;");

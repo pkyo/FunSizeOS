@@ -114,6 +114,8 @@ static void command_del() {
 }
 
 void console_write(char *buf, u32 count) {
+    CLI
+
     char ch;
     char *ptr = (char *) pos;
 
@@ -173,6 +175,8 @@ void console_write(char *buf, u32 count) {
     }
 
     set_cursor();
+
+    STI
 }
 
 void console_init(void) {

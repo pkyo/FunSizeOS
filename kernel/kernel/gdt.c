@@ -6,7 +6,6 @@
 #include "../include/linux/traps.h"
 #include "../include/linux/types.h"
 #include "../include/string.h"
-#include "../include/asm/system.h"
 
 
 #pragma clang diagnostic push
@@ -76,8 +75,6 @@ static void r3_gdt_data_item(int gdt_index, int base, int limit) {
 }
 
 void gdt_init() {
-    printk("start init gdt ...\n");
-
     // The `volatile` keyword tells the compiler not to optimize this block of code,
     // ensuring that it is executed exactly as written.
     // `sgdt gdt_ptr;` stores the Global Descriptor Table (GDT) register into
@@ -98,7 +95,7 @@ void gdt_init() {
     gdt_ptr.base = (int) &gdt;
     gdt_ptr.limit = sizeof(gdt) - 1;
 
-    BOCHS_DEBUG_MAGIC
+    // BOCHS_DEBUG_MAGIC
 
     // Loads the Global Descriptor Table (GDT) register from the memory location pointed to by `gdt_ptr`
     __asm__ volatile ("lgdt gdt_ptr;");
