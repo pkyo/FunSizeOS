@@ -24,6 +24,9 @@ void kernel_main(void) {
     // Once this flag is set, the CPU is allowed to process hardware interrupts.
     __asm__("sti;");
 
+    // divide by zero
+    int i = 10 / 0;
+
     while (true);
 }
 
