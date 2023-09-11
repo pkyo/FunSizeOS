@@ -33,6 +33,8 @@ void kernel_main(void) {
     printk("Hello FunsizeOS ...\n");
 
     print_check_memory_info();
+    memory_init();
+    memory_map_int();
 
     // The "sti;" instruction stands for "Set Interrupt Flag".
     // It is an assembly instruction for x86 processors that

@@ -42,4 +42,24 @@ typedef struct {
 
 void print_check_memory_info();
 
+typedef struct {
+    uint addr_start;     // Represent the start of the addressable memory above 1MB
+    uint addr_end;       // Ending address of the available memory
+    uint valid_mem_size;
+    uint pages_total;    // Represents the total number of memory pages that the machine's physical memory is divided into
+    uint pages_free;     // Indicates how many of the total memory pages are currently free and not in use.
+    uint pages_used;     // Represents the number of memory pages that are currently in use.
+} physics_memory_info_t;
+
+typedef struct {
+    uint addr_base;          // Represents the starting address of the available physical memory. It's mentioned that this typically starts from 3MB
+    uint pages_total;        // The total number of memory pages in the system
+    uint bitmap_item_used;   // The number of pages that have been mapped if 1 byte represents one page
+    uchar *map;
+} physics_memory_map_t;
+
+void memory_init();
+
+void memory_map_int();
+
 #endif //FUNSIZEOS_MM_H
