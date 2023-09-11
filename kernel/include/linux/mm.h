@@ -62,4 +62,8 @@ void memory_init();
 
 void memory_map_int();
 
+void *get_free_page();
+
+void free_page(void *p);
+
 #endif //FUNSIZEOS_MM_H

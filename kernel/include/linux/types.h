@@ -12,6 +12,8 @@
 #define true 1
 #define false 0
 
+#define NULL ((void *)0)
+
 typedef unsigned int size_t;
 
 typedef unsigned char uchar;

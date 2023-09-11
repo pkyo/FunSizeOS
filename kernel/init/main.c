@@ -36,6 +36,14 @@ void kernel_main(void) {
     memory_init();
     memory_map_int();
 
+    for (int i = 0; i < 3; ++i) {
+        void *p = get_free_page();
+
+        printk("%p\n", p);
+
+        free_page(p);
+    }
+
     // The "sti;" instruction stands for "Set Interrupt Flag".
     // It is an assembly instruction for x86 processors that
     // enables hardware interrupts by setting the interrupt flag in the EFLAGS register.
