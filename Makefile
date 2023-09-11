@@ -4,6 +4,7 @@ BOOT:=kernel/boot
 INIT:=kernel/init
 KERNEL:=kernel/kernel
 KERNEL_LIB:=kernel/lib
+KERNEL_MM:=kernel/mm
 # -m32: This option tells the compiler to generate code that will run on a 32-bit machine or in a 32-bit environment.
 # -masm=intel: This option tells the GCC compiler to output assembly code in Intel syntax, instead of the default AT&T syntax.
 # -fno-builtin: This option tells the compiler not to recognize built-in functions which do not begin with an underscore in the source code.
@@ -68,6 +69,7 @@ ${BUILDDIR}/kernel.bin: ${BUILDDIR}/boot/head.o ${BUILDDIR}/init/main.o \
 		${BUILDDIR}/kernel/asm/interrupt_handler.o \
 		${BUILDDIR}/kernel/asm/clock_handler.o \
 		${BUILDDIR}/kernel/traps.o \
+		${BUILDDIR}/mm/memory.o \
 		${BUILDDIR}/kernel/exception.o
 	# ld: It is the GNU linker, used to link object files and libraries into an executable or a final binary.
 	# -m elf_i386: This flag specifies the target format as ELF (Executable and Linkable Format) for the 32-bit x86 architecture.
@@ -80,6 +82,10 @@ ${BUILDDIR}/kernel/%.o: ${KERNEL}/%.c
 
 ${BUILDDIR}/lib/%.o: ${KERNEL_LIB}/%.c
 	$(shell mkdir -p ${BUILDDIR}/lib)
+	@gcc ${CFLAGS} ${DEBUG} -c $< -o $@
+
+${BUILDDIR}/mm/%.o: ${KERNEL_MM}/%.c
+	$(shell mkdir -p ${BUILDDIR}/mm)
 	@gcc ${CFLAGS} ${DEBUG} -c $< -o $@
 
 ${BUILDDIR}/kernel/chr_drv/%.o: ${KERNEL}/chr_drv/%.c

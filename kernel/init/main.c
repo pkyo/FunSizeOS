@@ -1,6 +1,8 @@
 #include "../include/linux/tty.h"
 #include "../include/linux/kernel.h"
 #include "../include/linux/traps.h"
+#include "../include/linux/mm.h"
+
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "EndlessLoop"
@@ -29,6 +31,8 @@ void kernel_main(void) {
 //    }
 
     printk("Hello FunsizeOS ...\n");
+
+    print_check_memory_info();
 
     // The "sti;" instruction stands for "Set Interrupt Flag".
     // It is an assembly instruction for x86 processors that
