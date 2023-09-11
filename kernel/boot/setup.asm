@@ -7,6 +7,11 @@
 [SECTION .data]
 KERNEL_ADDR equ 0x1200
 
+ARDS_TIMES_BUFFER       equ 0x1100
+ARDS_BUFFER             equ 0x1102
+ARDS_TIMES              dw 0
+CHECK_BUFFER_OFFSET     dw 0
+
 [SECTION .gdt] ; Global Descriptor Table (GDT)
 SEG_BASE equ 0
 SEG_LIMIT equ 0xfffff
@@ -122,6 +127,52 @@ setup_start:
     mov si, preparing_to_enter_protected_mode
     call print
 
+; `INT 0x15` is a BIOS interrupt call on the x86 architecture, and it provides a variety of functions.
+; When we refer to memory-related queries, especially when EAX is set to 0xE820,
+; we're typically discussing querying the system's physical address map.
+;   Input Parameters:
+;       EAX: Function number. Setting it to 0xE820 indicates querying the system address map.
+;       EDX: Should be set to the signature "SMAP" (0x534D4150) prior to the call.
+;       EBX: Used for pagination. On initial call, it should be set to 0, and after each call, the BIOS will return a new value,
+;           which should be used for the subsequent call until a returned value of 0.
+;       ECX: Size of the returned structure. Typically set to either 20 or 24, depending on the level of detail you wish to obtain.
+;       ES:DI: Points to a buffer where the BIOS will place the returned data.
+;   Output Parameters:
+;       EAX: Returns the signature "SMAP" (0x534D4150) as a confirmation.
+;       ES:DI: The buffer will be populated with the returned data.
+;       EBX: Used for pagination. If it returns 0, no more data blocks are available.
+;       ECX: The size of the data that was actually populated into the buffer.
+;       CF (Carry Flag): If set to 1, it indicates an error.
+memory_check:
+    xor ebx, ebx            ; Clear ebx to 0
+    mov di, ARDS_BUFFER     ; Set ES:DI to point to a memory location
+
+.loop:
+    ; Conduct a memory inspection using the BIOS `int 0x15` call with the function `0xe820`
+    ; (which is used to query system address map information).
+    mov eax, 0xe820                 ; Set AX to 0xe820
+    mov ecx, 20                     ; Set CX to 20
+    mov edx, 0x534D4150             ; Set DX to the "SMAP" signature
+    int 0x15                        ; BIOS interrupt call
+
+    jc memory_check_error           ; Jump to error handling if there's an error
+
+    add di, cx                      ; Point to the next memory structure
+
+    inc dword [ARDS_TIMES]          ; Increment the memory inspection counter
+
+    cmp ebx, 0                      ; During inspection, BIOS will modify EBX. If EBX is not zero, continue inspecting.
+    jne .loop
+
+    mov ax, [ARDS_TIMES]            ; Store the memory inspection count
+    mov [ARDS_TIMES_BUFFER], ax
+
+    mov [CHECK_BUFFER_OFFSET], di   ; Store the offset
+
+.memory_check_success:
+    mov si, memory_check_success_msg
+    call print
+
 enter_protected_mode:
     ; This instruction clears the interrupt flag, disabling all maskable interrupts.
     ; This is done because you don't want an interrupt to occur while you are switching to protected mode
@@ -140,6 +191,9 @@ enter_protected_mode:
     or eax, 1
     ; Writes the value back to cr0, thus enabling protected mode.
     mov cr0, eax
+
+    xchg bx, bx
+
     ; CODE_SELECTOR equ (1 << 3), the CODE_SELECTOR is defined to be 8,
     ; which in binary is 1000. This means the RPL is 0, the TI is 0, and the index is 1.
     ; Therefore, the CODE_SELECTOR is pointing to the second entry (index starts at 0) in the GDT
@@ -148,8 +202,22 @@ enter_protected_mode:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+memory_check_error:
+    mov si, memory_check_error_msg
+    call print
+
+    jmp $
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 preparing_to_enter_protected_mode:
     db "FunsizeOS is preparing to enter protected mode ... ", 10, 13, 0
+
+memory_check_error_msg:
+    db "FunsizeOS memory check fail ...", 10, 13, 0
+
+memory_check_success_msg:
+    db "FunsizeOS memory check success ...", 10, 13, 0
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
