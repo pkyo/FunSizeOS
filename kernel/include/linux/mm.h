@@ -66,6 +66,6 @@ void *get_free_page();
 
 void free_page(void *p);
 
-void virtual_memory_init();
+void *virtual_memory_init();
 
 #endif //FUNSIZEOS_MM_H

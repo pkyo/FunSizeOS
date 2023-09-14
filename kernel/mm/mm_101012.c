@@ -9,20 +9,23 @@
 #include "../include/string.h"
 
 #pragma clang diagnostic push
+#pragma ide diagnostic ignored "ConstantFunctionResult"
 #pragma clang diagnostic ignored "-Wvoid-pointer-to-int-cast"
 #pragma clang diagnostic ignored "-Wint-to-pointer-cast"
 #pragma clang diagnostic ignored "-Wpointer-to-int-cast"
 
-void virtual_memory_init() {
+#define PDT_START_ADDR 0x20000
+
+void *virtual_memory_init() {
     // A page directory table (pdt) is allocated
-    int *pdt = (int *) get_free_page();
+    int *pdt = (int *) PDT_START_ADDR;
 
     memset(pdt, 0, PAGE_SIZE);
 
     // Loop to Set Up the First 4 Page Tables
     for (int i = 0; i < 4; ++i) {
         // A page table (ptt) is allocated
-        int ptt = (int) get_free_page();
+        int ptt = (int) PDT_START_ADDR + ((i + 1) * 0x1000);
         // Page Directory Entry, PDE
         // | 31-12       | 11-9 |  8  |  7  |  6  |  5  |  4  |  3  |  2  |  1  |  0  |
         // |:-----------:|:----:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
@@ -68,6 +71,8 @@ void virtual_memory_init() {
     enable_page();
 
     BOCHS_DEBUG_MAGIC
+
+    return pdt;
 }
 
 #pragma clang diagnostic pop

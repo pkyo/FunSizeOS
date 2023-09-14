@@ -75,7 +75,7 @@ void memory_map_int() {
     }
 
     g_physics_memory_map.addr_base = (uint) VALID_MEMORY_FROM;
-    g_physics_memory_map.map = (uchar *) VALID_MEMORY_FROM;
+    g_physics_memory_map.map = (uchar *) 0x10000;
     g_physics_memory_map.pages_total = g_physics_memory.pages_total;
 
     memset(g_physics_memory_map.map, 0, g_physics_memory_map.pages_total);
@@ -85,25 +85,25 @@ void memory_map_int() {
     // However, there's a nuance.
     // This bitmap itself will occupy some physical memory.
     // Hence, the need arises to determine how many pages of physical memory the bitmap will consume.
-    g_physics_memory_map.bitmap_item_used = g_physics_memory_map.pages_total / PAGE_SIZE;
-    if (0 != g_physics_memory_map.pages_total % PAGE_SIZE) {
-        g_physics_memory_map.bitmap_item_used += 1;
-    }
-
-    for (int i = 0; i < g_physics_memory_map.bitmap_item_used; ++i) {
-        g_physics_memory_map.map[i] = 1;
-    }
-
-    printk("physical memory map position: 0x%X(%dM) - 0x%X(%dM)\n",
-           g_physics_memory_map.map,
-           ((int) g_physics_memory_map.map) / 1024 / 1024,
-           g_physics_memory_map.addr_base,
-           g_physics_memory_map.addr_base / 1024 / 1024);
-
-    printk("physical memory starts here: 0x%X(%dM), used: %d pages\n",
-           g_physics_memory_map.addr_base,
-           g_physics_memory_map.addr_base / 1024 / 1024,
-           g_physics_memory_map.bitmap_item_used);
+//    g_physics_memory_map.bitmap_item_used = g_physics_memory_map.pages_total / PAGE_SIZE;
+//    if (0 != g_physics_memory_map.pages_total % PAGE_SIZE) {
+//        g_physics_memory_map.bitmap_item_used += 1;
+//    }
+//
+//    for (int i = 0; i < g_physics_memory_map.bitmap_item_used; ++i) {
+//        g_physics_memory_map.map[i] = 1;
+//    }
+//
+//    printk("physical memory map position: 0x%X(%dM) - 0x%X(%dM)\n",
+//           g_physics_memory_map.map,
+//           ((int) g_physics_memory_map.map) / 1024 / 1024,
+//           g_physics_memory_map.addr_base,
+//           g_physics_memory_map.addr_base / 1024 / 1024);
+//
+//    printk("physical memory starts here: 0x%X(%dM), used: %d pages\n",
+//           g_physics_memory_map.addr_base,
+//           g_physics_memory_map.addr_base / 1024 / 1024,
+//           g_physics_memory_map.bitmap_item_used);
 }
 
 void *get_free_page() {
