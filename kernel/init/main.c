@@ -36,13 +36,15 @@ void kernel_main(void) {
     memory_init();
     memory_map_int();
 
-    for (int i = 0; i < 3; ++i) {
-        void *p = get_free_page();
+//    for (int i = 0; i < 3; ++i) {
+//        void *p = get_free_page();
+//
+//        printk("%p\n", p);
+//
+//        free_page(p);
+//    }
 
-        printk("%p\n", p);
-
-        free_page(p);
-    }
+    virtual_memory_init();
 
     // The "sti;" instruction stands for "Set Interrupt Flag".
     // It is an assembly instruction for x86 processors that
