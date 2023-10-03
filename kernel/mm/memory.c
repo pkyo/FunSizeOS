@@ -40,6 +40,14 @@ void memory_init() {
     check_memory_info_t *p = (check_memory_info_t *) ARDS_ADDR;
     check_memory_item_t *p_data = (check_memory_item_t *) (ARDS_ADDR + 2);
 
+    /* e.g.
+        0,  0,          0,      9F000,      1
+        0,  9F000,      0,      1000,       2
+        0,  e8000,      0,      18000,      2
+        0,  100000,     0,      lef0000,    1   🔥
+        0,  1FF0000,    0,      10000,      3
+        0,  FFFc0000,   0,      40000,      2
+    */
     for (int i = 0; i < p->times; ++i) {
         check_memory_item_t *tmp = p_data + i;
 
