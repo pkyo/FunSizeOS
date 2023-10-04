@@ -68,4 +68,8 @@ void free_page(void *p);
 
 void *virtual_memory_init();
 
+void *kmalloc(size_t size);
+
+void kfree_s(void *obj, int size);
+
 #endif //FUNSIZEOS_MM_H

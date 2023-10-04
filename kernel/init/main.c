@@ -2,7 +2,8 @@
 #include "../include/linux/kernel.h"
 #include "../include/linux/traps.h"
 #include "../include/linux/mm.h"
-
+#include "../include/linux/task.h"
+#include "../include/linux/sched.h"
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "EndlessLoop"
@@ -44,7 +45,21 @@ void kernel_main(void) {
 //        free_page(p);
 //    }
 
-    virtual_memory_init();
+//    virtual_memory_init();
+
+    task_init();
+
+    sched();
+
+    void *p = kmalloc(1);
+
+    printk("kmalloc 0x%p\n", p);
+
+//    kfree_s(p, 1);
+
+    p = kmalloc(100);
+
+    printk("kmalloc 0x%p\n", p);
 
     // The "sti;" instruction stands for "Set Interrupt Flag".
     // It is an assembly instruction for x86 processors that

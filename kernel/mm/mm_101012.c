@@ -2,11 +2,11 @@
 // Created by root on 9/14/23.
 //
 
-
 #include "../include/asm/system.h"
 #include "../include/linux/kernel.h"
 #include "../include/linux/mm.h"
 #include "../include/string.h"
+#include "../include/linux/task.h"
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "ConstantFunctionResult"
@@ -15,6 +15,11 @@
 #pragma clang diagnostic ignored "-Wpointer-to-int-cast"
 
 #define PDT_START_ADDR 0x20000
+
+// Linear addresses start from 2M
+#define VIRTUAL_MEM_START 0x200000
+
+extern task_t *current;
 
 void *virtual_memory_init() {
     // A page directory table (pdt) is allocated
@@ -50,17 +55,17 @@ void *virtual_memory_init() {
                 *item = 0b00000000000000000000000000000111 | virtual_addr;
             }
         } else {
-            for (int j = 0; j < 0x400; ++j) {
-                int *item = &ptt_arr[j];
-
-                int virtual_addr = j * 0x1000;
-
-                // 0x400 * 0x1000 -> 1024 * 4096
-                // virtual_addr lowest 12 bits are zeros
-                virtual_addr = virtual_addr + i * 0x400 * 0x1000;
-
-                *item = 0b00000000000000000000000000000111 | virtual_addr;
-            }
+//            for (int j = 0; j < 0x400; ++j) {
+//                int *item = &ptt_arr[j];
+//
+//                int virtual_addr = j * 0x1000;
+//
+//                // 0x400 * 0x1000 -> 1024 * 4096
+//                // virtual_addr lowest 12 bits are zeros
+//                virtual_addr = virtual_addr + i * 0x400 * 0x1000;
+//
+//                *item = 0b00000000000000000000000000000111 | virtual_addr;
+//            }
         }
     }
 
@@ -71,6 +76,8 @@ void *virtual_memory_init() {
     enable_page();
 
     BOCHS_DEBUG_MAGIC
+
+    printk("pdt addr: 0x%p\n", pdt);
 
     return pdt;
 }
