@@ -15,6 +15,7 @@
 #define NULL ((void *)0)
 
 typedef unsigned int size_t;
+typedef unsigned int pid_t;
 
 typedef unsigned char uchar;
 typedef unsigned short ushort;

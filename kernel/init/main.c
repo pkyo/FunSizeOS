@@ -51,15 +51,15 @@ void kernel_main(void) {
 
     sched();
 
-    void *p = kmalloc(1);
-
-    printk("kmalloc 0x%p\n", p);
-
-//    kfree_s(p, 1);
-
-    p = kmalloc(100);
-
-    printk("kmalloc 0x%p\n", p);
+//    void *p = kmalloc(1);
+//
+//    printk("kmalloc 0x%p\n", p);
+//
+////    kfree_s(p, 1);
+//
+//    p = kmalloc(100);
+//
+//    printk("kmalloc 0x%p\n", p);
 
     // The "sti;" instruction stands for "Set Interrupt Flag".
     // It is an assembly instruction for x86 processors that

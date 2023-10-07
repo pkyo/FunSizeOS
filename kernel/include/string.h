@@ -7,6 +7,8 @@
 
 #include "asm/system.h"
 
+char *strcpy(char *dest, const char *src);
+
 size_t strlen(const char *str);
 
 void *memcpy(void *dest, const void *src, size_t count);

@@ -34,3 +34,14 @@ void *memset(void *dest, int ch, size_t count) {
 
     return dest;
 }
+
+char *strcpy(char *dest, const char *src) {
+    char *ptr = dest;
+
+    while (true) {
+        *ptr++ = *src;
+
+        if (*src++ == EOS)
+            return dest;
+    }
+}

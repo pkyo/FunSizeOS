@@ -71,6 +71,7 @@ ${BUILDDIR}/kernel.bin: ${BUILDDIR}/boot/head.o ${BUILDDIR}/init/main.o \
 		${BUILDDIR}/kernel/task.o \
 		${BUILDDIR}/kernel/asm/interrupt_handler.o \
 		${BUILDDIR}/kernel/asm/clock_handler.o \
+		${BUILDDIR}/kernel/asm/sched.o \
 		${BUILDDIR}/kernel/traps.o \
 		${BUILDDIR}/mm/memory.o \
 		${BUILDDIR}/mm/malloc.o \
