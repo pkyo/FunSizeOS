@@ -49,7 +49,7 @@ void kernel_main(void) {
 
     task_init();
 
-    sched();
+//    sched();
 
 //    void *p = kmalloc(1);
 //

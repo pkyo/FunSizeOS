@@ -71,7 +71,9 @@ task_t *create_task(char *name, task_fun_t fun, int priority) {
 }
 
 void *t1_fun(void *arg) {
-    printk("t1 task running...\n");
+    for (int i = 0; i < 0xffffffff; ++i) {
+        printk("t1 task running...\n");
+    }
 
     return NULL;
 }
@@ -82,7 +84,8 @@ void *idle(void *arg) {
     while (true) {
         printk("idle task running...\n");
 
-        sched();
+        __asm__ volatile ("sti;");
+        __asm__ volatile ("hlt;");
     }
 }
 

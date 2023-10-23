@@ -59,7 +59,8 @@ _start:
 ; Disable all interrupts handled by the 8259A PIC except for the keyboard interrupt and clock interrupt.
 .enable_8259a_main:
     ; mov al, 11111100b
-    mov al, 11111111b
+    ; mov al, 11111111b
+    mov al, 11111110b
     out 21h, al
 
 ; Mask or disable all interrupts from a slave PIC.

@@ -7,4 +7,6 @@
 
 void sched();
 
+void do_timer();
+
 #endif //FUNSIZEOS_SCHED_H
