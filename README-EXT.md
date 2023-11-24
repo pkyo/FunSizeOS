@@ -1,3 +1,97 @@
+# Function Call - Assembly Perspective
+
+Sample C source code
+
+```c
+int max(int a, int b)
+{
+    if (a > b)
+    {
+        return a;
+    }
+    
+    return b;
+}
+
+int main()
+{
+    int a = 10;
+    int b = 20;
+    
+    int c = max(a, b);
+    
+    return 0;
+}
+```
+
+Disassembly code
+
+```text
+int main()
+{
+...
+
+	int a = 10;
+0017142E C7 45 F8 0A 00 00 00 mov         dword ptr [ebp-8],0Ah  
+	int b = 20;
+00171435 C7 45 EC 14 00 00 00 mov         dword ptr [ebp-14h],14h  
+
+	int c = max(a, b);
+0017143C 8B 45 EC             mov         eax,dword ptr [ebp-14h]  
+0017143F 50                   push        eax  
+00171440 8B 4D F8             mov         ecx,dword ptr [ebp-8]  
+00171443 51                   push        ecx  
+00171444 E8 CA FC FF FF       call        00171113  
+00171449 83 C4 08             add         esp,8  
+0017144C 89 45 E0             mov         dword ptr [ebp-20h],eax  
+
+	return 0;
+0017144F 33 C0                xor         eax,eax  
+}
+
+int max(int a, int b)
+{
+001713C0 55                   push        ebp  
+001713C1 8B EC                mov         ebp,esp  
+001713C3 81 EC C0 00 00 00    sub         esp,0C0h  
+001713C9 53                   push        ebx  
+001713CA 56                   push        esi  
+001713CB 57                   push        edi  
+
+...
+
+	if (a > b)
+001713DE 8B 45 08             mov         eax,dword ptr [ebp+8]  
+001713E1 3B 45 0C             cmp         eax,dword ptr [ebp+0Ch]  
+001713E4 7E 05                jle         001713EB  
+	{
+		return a;
+001713E6 8B 45 08             mov         eax,dword ptr [ebp+8]  
+001713E9 EB 03                jmp         001713EE  
+	}
+
+	return b;
+001713EB 8B 45 0C             mov         eax,dword ptr [ebp+0Ch]  
+}
+001713EE 5F                   pop         edi  
+001713EF 5E                   pop         esi  
+001713F0 5B                   pop         ebx  
+001713F1 8B E5                mov         esp,ebp  
+001713F3 5D                   pop         ebp  
+001713F4 C3                   ret  
+
+...
+
+max:
+00171113 E9 A8 02 00 00       jmp         001713C0  
+
+...
+```
+
+![assembly1](./docs/img/os2.jpg)
+
+![assembly1](./docs/img/os1.jpg)
+
 # Real Mode - Memory Layout
 
 ![LayoutTable](./docs/img/2.png)
