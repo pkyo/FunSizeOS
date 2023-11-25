@@ -63,12 +63,13 @@ gdt_code:
     ; S is the descriptor type (1 for code or data segments)
     ; TYPE defines the exact type of the segment. 1000 indicates a code segment that can be executed and read
     db 0b1_00_1_1000
-    ; G_DB_AVL_LIMIT
+    ; G_DB_L_AVL_LIMIT
     ; G is the granularity flag (0 for byte granularity, 1 for 4KB granularity)
     ; DB is the default operation size (1 for 32-bit segment, 0 for 16-bit segment)
+    ; L (64-bit code segment): Determines whether the segment is a 64-bit code segment (L=1) or not (L=0).
     ; AVL is available for use by system software
     ; LIMIT defines the high nibble of the segment limit.
-    COMPUTE_G_DB_AVL_LIMIT 0b11000000, SEG_LIMIT ; 0b1_1_00_0000
+    COMPUTE_G_DB_AVL_LIMIT 0b11000000, SEG_LIMIT ; 0b1_1_0_0_0000
     db SEG_BASE >> 24 & 0xf
 
 gdt_data:
@@ -81,12 +82,13 @@ gdt_data:
     ; S is the descriptor type (1 for code or data segments)
     ; TYPE defines the exact type of the segment. 0010 indicates a data segment that can be read and written
     db 0b1_00_1_0010
-    ; G_DB_AVL_LIMIT
+    ; G_DB_L_AVL_LIMIT
     ; G is the granularity flag (0 for byte granularity, 1 for 4KB granularity)
     ; DB is the default operation size (1 for 32-bit segment, 0 for 16-bit segment)
+    ; L (64-bit code segment): Determines whether the segment is a 64-bit code segment (L=1) or not (L=0).
     ; AVL is available for use by system software
     ; LIMIT defines the high nibble of the segment limit.
-    COMPUTE_G_DB_AVL_LIMIT 0b11000000, SEG_LIMIT ; 0b1_1_00_0000
+    COMPUTE_G_DB_AVL_LIMIT 0b11000000, SEG_LIMIT ; 0b1_1_0_0_0000
     db SEG_BASE >> 24 & 0xf
 
 gdt_b8000:
@@ -95,8 +97,8 @@ gdt_b8000:
     db B8000_SEG_BASE >> 16 & 0xff
     ; P_DPL_S_TYPE
     db 0b1_00_1_0010
-    ; G_DB_AVL_LIMIT
-    COMPUTE_G_DB_AVL_LIMIT 0b01000000, SEG_LIMIT ; 0b0_1_00_0000
+    ; G_DB_L_AVL_LIMIT
+    COMPUTE_G_DB_AVL_LIMIT 0b01000000, SEG_LIMIT ; 0b0_1_0_0_0000
     db B8000_SEG_BASE >> 24 & 0xf
 
 gdt_ptr:
