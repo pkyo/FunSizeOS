@@ -86,7 +86,7 @@ _start:
 
 .read_data:
     ; This reads the value from the I/O port specified in
-    ; dx (0x1f7, the hard drive's status register) into the al register.
+    ; dx (0x1f0, the hard drive's status register) into the al register.
     in ax, dx
     mov [edi], ax
     add edi, 2
