@@ -92,6 +92,10 @@ max:
 
 ![assembly1](./docs/img/os1.jpg)
 
+# GDT
+
+![GDT](./docs/img/os03.png)
+
 # Real Mode - Memory Layout
 
 ![LayoutTable](./docs/img/2.png)
