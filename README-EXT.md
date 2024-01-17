@@ -119,3 +119,13 @@ The ROM-BIOS plays a key role in the boot process by reading the contents of the
 and loading it into the memory at the address **0x0000:0x7c00**. Following this, the BIOS executes a `jmp` instruction
 to this
 memory address, continuing the boot sequence.
+
+# Memory layout of this project
+
+![LayoutTableThisProject](./docs/img/os04.png)
+
+```text
+0x07C00         boot.o
+0x00500         setup.o
+0x01200         system.bin
+```
