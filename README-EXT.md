@@ -128,4 +128,8 @@ memory address, continuing the boot sequence.
 0x07C00         boot.o
 0x00500         setup.o
 0x01200         system.bin
+0x01100	        memory info
+0x010000        memory map
+0x100000        free user memory
+0x9FBFF         ESP
 ```

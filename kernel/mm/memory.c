@@ -70,7 +70,8 @@ void memory_init() {
 
     // This operation effectively divides the address by 4096 (2^12),
     // assuming that each page is 4096 bytes (or 4 KB) in size.
-    g_physics_memory.pages_total = g_physics_memory.addr_end >> 12;
+//    g_physics_memory.pages_total = g_physics_memory.addr_end >> 12;
+    g_physics_memory.pages_total = (g_physics_memory.addr_end - g_physics_memory.addr_start) >> 12;
     g_physics_memory.pages_used = 0;
     g_physics_memory.pages_free = g_physics_memory.pages_total - g_physics_memory.pages_used;
 }
