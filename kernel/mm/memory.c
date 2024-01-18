@@ -143,6 +143,16 @@ void *get_free_page() {
     return ret;
 }
 
+/*
+ *
+ * There will be memory fragmentation
+ *
+ * [get_free_page] return: 0x102000, used: 3 pages
+ * [get_free_page] return: 0x103000, used: 4 pages
+ * [free_page] return: 0x102000, used: 3 pages
+ * [get_free_page] return: 0x104000, used: 4 pages
+ *
+ * */
 void free_page(void *p) {
     if ((uint) p < g_physics_memory.addr_start || (uint) p > g_physics_memory.addr_end) {
         printk("invalid memory address !");
