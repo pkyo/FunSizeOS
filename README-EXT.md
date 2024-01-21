@@ -133,3 +133,16 @@ memory address, continuing the boot sequence.
 0x100000        free user memory
 0x9FBFF         ESP
 ```
+
+# 101012 paging
+
+![101012paging](./docs/img/os05.png)
+
+One item of **a page table** can cover 4KB of memory, exactly 12 bits (2^12=4096B).
+
+One item of **a page dictionary table** can cover 4M of memory, which is the amount of memory **a page table** can cover, 
+exactly 22 bits (2^22=4194304B=4096KB).
+
+The address of a physical page must be 4KB aligned, so only the high 20 bits of the **page table** address need to be recorded in the table entry of the **page directory** (the last 12 bits are all zeros).
+
+The address of a physical page must be 4KB aligned, so only the high 20 bits of the physical page address need to be recorded in the table entry of the **page table** (the last 12 bits are all zeros).
