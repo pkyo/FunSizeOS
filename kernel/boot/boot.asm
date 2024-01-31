@@ -2,14 +2,14 @@
 
 [SECTION .data]
 BOOT_MAIN_ADDR equ 0x500
-THE_NUMBER_OF_THE_STARTING_SECTOR equ 2
+THE_NUMBER_OF_THE_STARTING_SECTOR equ 1
 THE_NUMBER_OF_SECTORS_TO_READ equ 2
 
 [SECTION .text]
 [BITS 16]
-global _start
+global boot_start
 
-_start:
+boot_start:
     ; These two lines of code would change the video mode
     ; of the computer to 80x25 text mode(80 columns by 25 rows)
     mov ax, 3
@@ -23,15 +23,22 @@ _start:
     mov gs, ax
     mov si, ax
 
-    ; ecx is set to the number of the starting sector to read from the disk
-    ; bl is set to the number of sectors to read
+    mov edi, BOOT_MAIN_ADDR
     mov ecx, THE_NUMBER_OF_THE_STARTING_SECTOR
     mov bl, THE_NUMBER_OF_SECTORS_TO_READ
 
+    call read_hd
+
+    mov si, jump_to_setup_message
+    call print
+
+    jmp BOOT_MAIN_ADDR
+
+read_hd:
     ; The next sequence of instructions sets up disk parameters by
     ; writing to the disk control ports from 0x1F2 to 0x1F7.
-    mov dx, 0x1f2 ; 0x1F2: Number of sectors to read/write
-    mov al, bl
+    mov dx, 0x1f2
+    mov al, bl ; 0x1F2: Number of sectors to read/write
     out dx, al
 
     inc dx ; 0x1F3: The low 8 bits of the LBA (Logical Block Addressing mode)
@@ -51,13 +58,15 @@ _start:
     ; selects the head number (in CHS mode) or provides the top 4 bits of the LBA (in LBA mode).
     ; It also selects the addressing mode (CHS or LBA).
     inc dx
-    mov al, ch
     ; Bits 0-3: These bits represent the highest four bits (bits 24-27) of the LBA address.
     ; Bit 4: This bit selects the hard drive. A 0 denotes the master drive, and a 1 denotes the slave drive.
     ; Bit 5: In the ATA specification, this bit is usually set to 1.
     ; Bit 6: This bit selects the addressing mode. A 0 means CHS mode is used, while a 1 means LBA mode is used.
     ; Bit 7: This bit is usually set to 1, as per the ATA specification.
-    and al, 0b1110_1111
+    shr ecx, 8
+    and cl, 0b1111
+    mov al, 0b1110_0000
+    or al, cl
     out dx, al
 
     inc dx ; 0x1F7: Status command
@@ -66,39 +75,53 @@ _start:
     mov al, 0x20
     out dx, al
 
-.read_check:
+    mov cl, bl
+
+.start_read:
+    push cx
+
+    call .wait_hd_prepare
+    call read_hd_data
+
+    pop cx
+
+    loop .start_read
+
+.return:
+    ret
+
+.wait_hd_prepare:
     mov dx, 0x1f7
+
+.check:
     ; This reads the value from the I/O port specified in dx (0x1f7, the hard drive's status register)
     in al, dx
-
     ; This isolates the third and seventh bits of the status register,
     ; which indicate the readiness of the drive (bit 3) and whether the drive is busy (bit 7).
-    and al, 0b10001000
-    cmp al, 0b00001000
+    and al, 0b1000_1000
+    cmp al, 0b0000_1000
+    ; It will jump back to the .check label if the result of the previous cmp operation is not zero
+    jnz .check
 
-    ; It will jump back to the .read_check label if the result of the previous cmp operation is not zero
-    jnz .read_check
+    ret
 
+read_hd_data:
     mov dx, 0x1f0
     ; cx will be used as a counter in the loop for reading data.
     mov cx, 256
-    mov edi, BOOT_MAIN_ADDR
 
-.read_data:
+.read_word:
     ; This reads the value from the I/O port specified in
     ; dx (0x1f0, the hard drive's status register) into the al register.
     in ax, dx
     mov [edi], ax
     add edi, 2
-    ; This decrements the cx register by 1 and then jumps back to the .read_data label if cx is not zero.
+    ; This decrements the cx register by 1 and then jumps back to the .read_word label if cx is not zero.
     ; This forms a loop that will continue to read data from the hard drive into memory,
     ; 1 word at a time, until 256 words (512 bytes, or one sector) have been read.
-    loop .read_data
+    loop .read_word
 
-    mov si, jump_to_setup_message
-    call print
-
-    jmp BOOT_MAIN_ADDR
+    ret
 
 jump_to_setup_message:
     ; In ASCII, the value 10 represents a newline (\n)

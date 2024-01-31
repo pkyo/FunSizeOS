@@ -122,3 +122,9 @@ clean:
 
 bochs:
 	@bochs -q -f bochsrc
+
+qemu: all
+	@qemu-system-i386 \
+	-m 32M \
+	-boot c \
+	-hda ./hd.img
